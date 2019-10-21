@@ -1,25 +1,27 @@
 public class LinkedStack {
-    
-     private class Node {
 
-        public Integer element;
-        public Node next;
-
-        public Node(Integer element) {
-            this.element = element;
-            next = null;
-        }
-    }
-    
-    private Node head;    
-    private Node tail;
+    private Node header;
+    private Node trailer;
     private int count;
 
+    private class Node {
+        public String element;
+        public Node next;
+        public Node prev;
+        public Node(String e) {
+            element = e;
+            next = null;
+            prev = null;
+        }
+    }
+
     public LinkedStack() {
-        head = null;
-        tail = null;
+        header = new Node("");
+        trailer = new Node("");
+        header.next = trailer;
+        trailer.prev = header;
         count = 0;
-    } 
+    }
 
     public Integer size() {
         return count;
@@ -39,23 +41,39 @@ public class LinkedStack {
         count = 0;
     }
 
-    public Integer top() {
+    public String top() {
         return trailer.prev.element;
     }
 
-    public void push(Integer elem) {        
+    public void push(String element) {
+        Node elem = new Node(element);
         trailer.prev.next = elem;
-        ele.prev = trailer.prev;
+        elem.prev = trailer.prev;
         trailer.prev = elem;
         elem.next = trailer;
         count++;
     }
 
-    public Integer pop() {
-        Integer elem = trailer.prev.element;
-        elem.prev.next = trialer;
+    public String pop() {
+        Node elem = trailer.prev;
+        elem.prev.next = trailer;
         trailer.prev = elem.prev;
         count--;
-        return elem;
+        return elem.element;
     }
 
+    public String get(int i) {
+        Node aux = header.next;
+        for(int j = 0; j < i; j++) {
+            aux = aux.next;
+        }
+        return aux.element;
+    }
+
+    public void printList() {
+        for(int i = 0; i < this.size(); i++) {
+            System.out.print(this.get(i) + " ");
+        }
+        System.out.println();
+    }
+}
