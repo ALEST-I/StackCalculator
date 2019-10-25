@@ -46,51 +46,57 @@ public class Calculadora {
             if(totalStackSize < (numbers.size() + ops.size())) {
                 totalStackSize = (numbers.size() + ops.size());
             }
-            String op = ops.pop();
-            float res = 0;            
-            if(op.equals("pop") || op.equals("swap") || op.equals("chs") || op.equals("dup") || op.equals("sqrt")) {
-                switch(op) {
-                    case "pop":
-                        numbers.pop();
-                        break;
-                    case "swap":
-                        numbers = swapOp(numbers);
-                        break;
-                    case "chs":
-                        numbers = chs(numbers);
-                        break;
-                    case "dup":
-                        numbers = dup(numbers);                        
-                        break;
-                    case "sqrt":
-                        numbers = sqrt(numbers);
+            if(ops.size() > 0) {            
+                String op = ops.pop();
+                float res = 0;            
+                if(op.equals("pop") || op.equals("swap") || op.equals("chs") || op.equals("dup") || op.equals("sqrt")) {
+                    switch(op) {
+                        case "pop":
+                            numbers.pop();
+                            break;
+                        case "swap":
+                            numbers = swapOp(numbers);
+                            break;
+                        case "chs":
+                            numbers = chs(numbers);
+                            break;
+                        case "dup":
+                            numbers = dup(numbers);                        
+                            break;
+                        case "sqrt":
+                            numbers = sqrt(numbers);
+                    }
                 }
-            }
-            else {
-                float num1 = Float.valueOf(numbers.pop());
-                float num2 = Float.valueOf(numbers.pop());
-                switch (op) {
-                    case "/":
-                        res = num2 / num1;
-                        numbers.push(Float.toString(res));
-                        break;
-                    case "*":
-                        res = num2 * num1;
-                        numbers.push(Float.toString(res));
-                        break;
-                    case "+":
-                        res = num2 + num1;
-                        numbers.push(Float.toString(res));
-                        break;
-                    case "-":
-                        res = num2 - num1;
-                        numbers.push(Float.toString(res));
-                        break;                    
-                } 
-            }
-            if(numbers.size() == 1) {
+                else {
+                    float num1 = Float.valueOf(numbers.pop());
+                    float num2 = Float.valueOf(numbers.pop());
+                    switch (op) {
+                        case "/":
+                            res = num2 / num1;
+                            numbers.push(Float.toString(res));
+                            break;
+                        case "*":
+                            res = num2 * num1;
+                            numbers.push(Float.toString(res));
+                            break;
+                        case "+":
+                            res = num2 + num1;
+                            numbers.push(Float.toString(res));
+                            break;
+                        case "-":
+                            res = num2 - num1;
+                            numbers.push(Float.toString(res));
+                            break;                    
+                    } 
+                }
+                if(numbers.size() == 1) {
+                    fim = 1;
+                }
+            } else {
+                System.out.println("Mais de um resultado na pilha.");
                 fim = 1;
             }
+            
         }
         
         System.out.println("Resultado armazenado no topo da pilha: " + numbers.top());        
