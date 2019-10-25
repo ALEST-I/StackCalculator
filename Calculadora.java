@@ -1,3 +1,10 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+import java.nio.file.*;
+import java.nio.charset.Charset;
+
 public class Calculadora {
 
     public Calculadora() {
@@ -5,28 +12,26 @@ public class Calculadora {
 
     public static void main(String args[]) {
         LinkedStack stack = new LinkedStack();
-        stack.push("+");
-        stack.push("10");
-        stack.push("chs");
-        stack.push("pop");
-        stack.push("10");
-        stack.push("*");
-        stack.push("/");
-        stack.push("5");
-        stack.push("swap");
-        stack.push("3");
-        stack.push("6");
-       stack.printList();
+        
+        // Get the file name
+        Scanner in = new Scanner(System.in);
+        System.out.print("Informe o nome do arquivo de entrada (incluindo a extensão do arquivo): ");
+        String fileName = in.nextLine();
+        in.close();
+
+        // Read the file and get the numbers and ops
+        readFile(stack, fileName);
+        stack = reverseStack(stack);        
 
         int totalStackSize = stack.size();
-        
         LinkedStack numbers = new LinkedStack();
         LinkedStack ops = new LinkedStack();
 
         int stackSize = stack.size();
         for(int i = 0; i < stackSize; i++) {
             String c = stack.pop();            
-            if(c.equals("/") || c.equals("-") || c.equals("+") || c.equals("*") || c.equals("swap") || c.equals("pop") || c.equals("chs")) {
+            if(c.equals("/") || c.equals("-") || c.equals("+") || c.equals("*") || c.equals("swap") || 
+                c.equals("pop") || c.equals("chs") || c.equals("dup") || c.equals("sqrt")) {
                 ops.push(c);
             } else {
                 numbers.push(c);
@@ -43,8 +48,7 @@ public class Calculadora {
             }
             String op = ops.pop();
             float res = 0;            
-            if(op.equals("pop") || op.equals("swap") || op.equals("chs")) {
-                // numbers.printList();
+            if(op.equals("pop") || op.equals("swap") || op.equals("chs") || op.equals("dup") || op.equals("sqrt")) {
                 switch(op) {
                     case "pop":
                         numbers.pop();
@@ -55,6 +59,11 @@ public class Calculadora {
                     case "chs":
                         numbers = chs(numbers);
                         break;
+                    case "dup":
+                        numbers = dup(numbers);                        
+                        break;
+                    case "sqrt":
+                        numbers = sqrt(numbers);
                 }
             }
             else {
@@ -84,8 +93,7 @@ public class Calculadora {
             }
         }
         
-        System.out.print("Resultado armazenado no topo da pilha: ");
-        numbers.printList();
+        System.out.println("Resultado armazenado no topo da pilha: " + numbers.top());        
         System.out.println("Tamanho máximo da pilha: " +  totalStackSize);
 
     }
@@ -106,30 +114,39 @@ public class Calculadora {
         return newStack;
     }
 
-    private static LinkedStack dup(LinkedStack stack) {
-        String num1 = stack.pop();
-        stack.push(num1);
-        return stack;
-    }
     private static LinkedStack chs(LinkedStack stack) {        
         float numb1 = Float.valueOf(stack.pop()) * -1;
         stack.push(Float.toString(numb1));
         return stack;
     }
 
-    // public String get(int i) {
-    //     Node aux = header.next;
-    //     for(int j = 0; j < i; j++) {
-    //         aux = aux.next;
-    //     }
-    //     return aux.element;
-    // }
+    private static LinkedStack dup(LinkedStack stack) {
+        stack.push(stack.top());
+        return stack;
+    }
 
-    // public void printList() {
+    private static LinkedStack sqrt(LinkedStack stack) {
+        double num = Float.valueOf(stack.pop());
+        num = Math.sqrt(num);
+        stack.push(Double   .toString(num));
+        return stack;
+    }
 
-    //     for(int i = 0; i < this.size(); i++) {
-    //         System.out.print(this.get(i) + " ");
-    //     }
-    //     System.out.println();
-    // }
+    private static LinkedStack readFile(LinkedStack stack, String fileName) {
+        Path path1 = Paths.get(fileName);
+        try(Scanner sc=new Scanner(Files.newBufferedReader(path1,Charset.defaultCharset()))) {
+            sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
+            while (sc.hasNext()) {
+                String s = sc.next();
+                s = s.replaceAll("\n", "");
+                s = s.replaceAll("\r", "");
+                s = s.replaceAll("\t", "");
+                stack.push(s);
+            }
+        } catch (IOException x) {
+            System.err.format("Erro de E/S: %s%n", x);
+        }
+
+        return stack;
+    }
 }

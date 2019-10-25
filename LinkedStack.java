@@ -61,19 +61,4 @@ public class LinkedStack {
         count--;
         return elem.element;
     }
-
-    public String get(int i) {
-        Node aux = header.next;
-        for(int j = 0; j < i; j++) {
-            aux = aux.next;
-        }
-        return aux.element;
-    }
-
-    public void printList() {
-        for(int i = 0; i < this.size(); i++) {
-            System.out.print(this.get(i) + " ");
-        }
-        System.out.println();
-    }
 }
